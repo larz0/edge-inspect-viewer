@@ -31,7 +31,6 @@ This project generates a user friendly way of viewing & managing the snapshots c
 
 3. I have noticed that some devices can contain special characters.  When Adobe Edge Inspect does a screenshot of these devices, it can cause issues with the file names.  To resolve this issue, I have created two files in the **helpers** folder that can be of use ( I personally use them on all computers setup with this application, as it greatly simplifies things ).
 	* The first file, **clean.sh**, is something that renames the files in the Edge Inspect folder to remove any special characters. If you are using OSX, you will not need to change this file, if you are using something else, you will need to change line two to point to where the Edge Inspect folder is located.
-
 	* The second file, **Edge Inspect.workflow**, is specific to OSX and is use to watch for changed in the Adobe Edge folder and automatically update the file names.  This is what I am using as I do not need to remember to run the shell script each time, and it just works ;)
 
 ## Screenshots
