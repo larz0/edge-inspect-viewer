@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Adobe Edge Inspect - Snapshot Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="cleartype" content="on">
+    <meta name="description" content="Adobe Edge Inspect - Snapshot Viewer">
+    <meta name="author" content="Peter Schmalfeldt <me@peterschmalfeldt.com>">
+
+    <!-- Le styles -->
+    <link href="css/style.css" rel="stylesheet" />
+
+    <!-- Adobe Edge Font as mention on http://adobe.github.com/topcoat/#fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,600,700' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="img/ico/apple-touch-icon-57-precomposed.png">
+    <link rel="shortcut icon" href="img/ico/favicon.ico">
+  </head>
+
+  <body>
+
+    <!-- Start Header -->
+    <div id="header">
+
+      <!-- Start Controls -->
+      <div id="controls">
+
+        <!-- Start Date Filter -->
+        <div class="btn-group option-set">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" rel="tooltip" data-placement="bottom" data-original-title="Filter by Date">Date <span class="caret"></span></a>
+          <ul class="dropdown-menu date_filter">
+            <li class="divider"></li>
+            <li><a href="#" class="clear-selection filter_date" onclick="return snapshots.filter_date('');"><i class="icon-remove"></i> Clear Filters</a></li>
+          </ul>
+        </div>
+        <!-- End Date Filter -->
+
+        <!-- Start URL Filter -->
+        <div class="btn-group option-set">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" rel="tooltip" data-placement="bottom" data-original-title="Filter by Specific URL">URL <span class="caret"></span></a>
+          <ul class="dropdown-menu url_filter">
+            <li class="divider"></li>
+            <li><a href="#" class="clear-selection filter_url"><i class="icon-remove"></i> Clear Filters</a></li>
+          </ul>
+        </div>
+        <!-- End URL Filter -->
+
+        <!-- Start OS Filter -->
+        <div class="btn-group option-set">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#" rel="tooltip" data-placement="bottom" data-original-title="Filter Devices by Operating System">OS <span class="caret"></span></a>
+          <ul class="dropdown-menu os_filter">
+            <li class="divider"></li>
+            <li><a href="#" class="clear-selection filter_os"><i class="icon-remove"></i> Clear Filters</a></li>
+          </ul>
+        </div>
+        <!-- End OS Filter -->
+
+        <!-- Start Filter Reset -->
+        <div class="btn-group option-set">
+          <a href="#" class="btn clear-selection clear_filters" rel="tooltip" data-placement="bottom" data-original-title="Remove All Filters"><i class="icon-repeat"></i></a>
+        </div>
+        <!-- End Filter Reset -->
+
+        <!-- Start Navigation Buttons -->
+        <div class="btn-group option-set">
+          <a href="#page1" class="btn page_previous" rel="tooltip" data-placement="bottom" data-original-title="Jump to Previous Group of Snapshots"><i class="icon-chevron-left"></i></a>
+          <a href="#page2" class="btn page_next" rel="tooltip" data-placement="bottom" data-original-title="Jump to Next Group of Snapshots"><i class="icon-chevron-right"></i></a>
+        </div>
+        <!-- End Navigation Buttons -->
+
+      </div>
+      <!-- End Controls -->
+
+    </div>
+    <!-- End Header -->
+
+    <!-- Modals -->
+    <div id="confirm_delete" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="confirm_delete_label" aria-hidden="true" style="display: none;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="confirm_delete_label">Delete Snapshot Group?</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this group of Snapshots? This cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-danger" onclick="return snapshots.delete_group();">Delete</button>
+      </div>
+    </div>
+
+    <div id="no_files" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="no_files_label" aria-hidden="true" style="display: none;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="document.location.reload(true);">×</button>
+        <h3 id="no_files_label">Oops!</h3>
+      </div>
+      <div class="modal-body">
+        <p>Looks like there are no snapshots to show. Make sure you set the <b>PATH_TO_SNAPSHOTS</b> setting correctly in snapshots.php. Click the OK button to refresh the page.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true" onclick="document.location.reload(true);">OK, I've Fixed It</button>
+      </div>
+    </div>
+
+    <div id="error_message" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="error_message_label" aria-hidden="true" style="display: none;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="error_message_label">Error Message</h3>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">OK</button>
+      </div>
+    </div>
+
+    <script src="js/plugins.js"></script>
+    <script src="js/site.js"></script>
+
+  </body>
+</html>

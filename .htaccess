@@ -1,0 +1,6 @@
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)(\.gz)?$">
+	ExpiresActive on
+	ExpiresDefault "access plus 1 month"
+	Header unset ETag
+	FileETag None
+</FilesMatch>
